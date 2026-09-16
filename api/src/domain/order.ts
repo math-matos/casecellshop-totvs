@@ -11,6 +11,5 @@ export interface Order {
   status: 'CONFIRMED'
   items: OrderItem[]
   totalInCents: number
-  currency: 'BRL'
   createdAt: string
 }

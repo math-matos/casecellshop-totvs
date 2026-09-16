@@ -8,7 +8,6 @@ export interface CheckoutResponse {
   status: Order['status']
   items: Order['items']
   totalInCents: number
-  currency: Order['currency']
   createdAt: string
 }
 
@@ -18,7 +17,6 @@ export function toCheckoutResponse(order: Order): CheckoutResponse {
     status: order.status,
     items: order.items,
     totalInCents: order.totalInCents,
-    currency: order.currency,
     createdAt: order.createdAt,
   }
 }

@@ -27,7 +27,6 @@ describe('POST /checkout', () => {
       const body = res.json()
       expect(body).toMatchObject({
         status: 'CONFIRMED',
-        currency: 'BRL',
         totalInCents: 4990 * 2 + 2990,
         items: [
           {

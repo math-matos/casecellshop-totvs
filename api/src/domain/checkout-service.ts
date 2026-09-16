@@ -101,7 +101,6 @@ export class CheckoutService {
       status: 'CONFIRMED',
       items: orderItems,
       totalInCents: orderItems.reduce((sum, item) => sum + item.subtotalInCents, 0),
-      currency: 'BRL',
       createdAt: this.now().toISOString(),
     }
 
