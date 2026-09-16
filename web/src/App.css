@@ -48,12 +48,6 @@
   display: block;
 }
 
-@media (prefers-color-scheme: dark) {
-  .offering__logo {
-    filter: invert(1) brightness(1.8);
-  }
-}
-
 .shell {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 344px;

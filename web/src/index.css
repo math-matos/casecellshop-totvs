@@ -50,38 +50,12 @@
   --sans: 'Roboto', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
 
   font: 16px/1.5 var(--sans);
-  color-scheme: light dark;
+  color-scheme: light;
   color: var(--text);
   background: var(--page);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --page: #0b1114;
-    --surface: #131b20;
-    --surface-2: #182228;
-    --surface-3: #202c33;
-    --text: #eef3f5;
-    --muted: #93a1ab;
-    --border: #223038;
-    --border-strong: #2e3f49;
-
-    --brand: #00c9eb;
-    --brand-hover: #35d6f0;
-    --brand-soft: #0f333c;
-    --brand-ink: #00222b;
-
-    --success: #35c68d;
-    --success-soft: #122a20;
-    --danger: #ff6b7e;
-    --danger-soft: #2c161c;
-
-    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --shadow-panel: 0 12px 28px -10px rgba(0, 0, 0, 0.6), 0 4px 12px -6px rgba(0, 0, 0, 0.5);
-  }
 }
 
 ::selection {
