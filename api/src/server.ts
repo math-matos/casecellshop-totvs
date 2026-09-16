@@ -1,6 +1,6 @@
 import { buildApp } from './app.js'
 
-const app = buildApp()
+const app = buildApp({ logger: true })
 const port = Number(process.env.PORT ?? 3000)
 
 try {
