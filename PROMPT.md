@@ -1,0 +1,3 @@
+# 1 - Com base no layout de checkout da print, crie a tela de checkout com os campos e botões necessários para o usuário finalizar a compra, nao quero que tenha esse header e nem essa sidebar da esquerda. A tela deve ser responsiva e funcionar em dispositivos móveis e desktops. Oferecendo uma experiência de usuário intuitiva e agradável.
+
+# 2 - Quando clicar em "Continuar" me redirecionar para a tela de checkout, onde o usuário poderá revisar os itens do carrinho, inserir informações de pagamento e finalizar a compra. As informações de pagamento nessa etapa são apenas para fins de teste então pode colocar qualquer informação de cartão de crédito, não precisa ser real.

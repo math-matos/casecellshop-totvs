@@ -5,11 +5,31 @@ import type { Product } from '../src/domain/product.js'
 import { InMemoryProductRepository } from '../src/repositories/product-repository.js'
 
 export const PRODUCTS: readonly Product[] = [
-  { id: 'capinha-verde', name: 'Capinha Verde', priceInCents: 4990, stock: 0 },
-  { id: 'capinha-preta', name: 'Capinha Preta', priceInCents: 4990, stock: 10 },
-  { id: 'pelicula-vidro-3d', name: 'Película de Vidro 3D', priceInCents: 2990, stock: 1 },
+  {
+    id: 'capinha-verde',
+    name: 'Capinha Verde',
+    category: 'capinhas',
+    priceInCents: 4990,
+    compareAtPriceInCents: 6990,
+    stock: 0,
+  },
+  {
+    id: 'capinha-preta',
+    name: 'Capinha Preta',
+    category: 'capinhas',
+    priceInCents: 4990,
+    stock: 10,
+  },
+  {
+    id: 'pelicula-vidro-3d',
+    name: 'Película de Vidro 3D',
+    category: 'peliculas',
+    priceInCents: 2990,
+    stock: 1,
+  },
 ]
 
+/** Cria uma app isolada com o catálogo de teste (estado novo a cada chamada). */
 export function makeApp(options: AppOptions = {}): FastifyInstance {
   return buildApp({
     productRepository: new InMemoryProductRepository(PRODUCTS),
@@ -24,6 +44,7 @@ export interface CheckoutCall {
   headers?: Record<string, string>
 }
 
+/** Faz um POST /checkout com defaults sensatos (chave nova, body JSON). */
 export function postCheckout(app: FastifyInstance, call: CheckoutCall = {}) {
   const headers: Record<string, string> = { ...call.headers }
 
