@@ -79,9 +79,7 @@ export default function App() {
       setOrder(confirmed)
       cart.clear()
       idempotency.current = null
-      navigate('/')
-      // O estoque mudou no servidor: recarrega para a vitrine refletir a compra.
-      void reloadProducts({ silent: true })
+      navigate('/payment-confirmed')
     } catch (error) {
       const apiError =
         error instanceof ApiError
@@ -99,7 +97,9 @@ export default function App() {
   const handleNewOrder = useCallback(() => {
     setOrder(null)
     idempotency.current = null
-  }, [])
+    navigate('/')
+    void reloadProducts({ silent: true })
+  }, [navigate])
 
   const visibleProducts = useMemo(
     () => (filter === 'todos' ? products : products.filter((item) => item.category === filter)),
