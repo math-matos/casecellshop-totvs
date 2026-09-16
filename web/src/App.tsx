@@ -82,7 +82,15 @@ export default function App() {
           ? error
           : new ApiError(0, 'SERVER_ERROR', 'Erro inesperado ao finalizar a compra.')
 
-      setFailure({ signature: cartSignature, error: apiError })
+      // Conflitos de Idempotency-Key são detalhe interno: o cliente só precisa saber que deve tentar de novo.
+      const isIdempotencyConflict =
+        apiError.code === 'IDEMPOTENCY_KEY_REUSED' || apiError.code === 'IDEMPOTENCY_REQUEST_IN_PROGRESS'
+      const displayError = isIdempotencyConflict
+        ? new ApiError(apiError.status, apiError.code, 'Não foi possível confirmar o pedido. Tente gerar um novo pedido.')
+        : apiError
+
+      setFailure({ signature: cartSignature, error: displayError })
+
       // O estoque pode ter mudado por causa de outra compra: sincroniza a vitrine.
       if (apiError.code === 'INSUFFICIENT_STOCK') void reloadProducts({ silent: true })
     } finally {
