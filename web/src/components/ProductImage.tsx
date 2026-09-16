@@ -113,6 +113,17 @@ const BY_CATEGORY: Record<Category, Art> = {
   audio: headphones,
 }
 
+/**
+ * Fotos reais para as capinhas (estampa "ondas" em 4 cores), servidas de `public/products`.
+ * Os demais produtos continuam com a ilustração em SVG.
+ */
+const PHOTO_BY_ID: Record<string, string> = {
+  'capinha-verde': '/products/capinha-ondas-azul.jpg',
+  'capinha-preta': '/products/capinha-ondas-grafite.jpg',
+  'capinha-transparente': '/products/capinha-ondas-vinho.jpg',
+  'capinha-couro-magsafe': '/products/capinha-ondas-terracota.jpg',
+}
+
 interface ProductImageProps {
   productId: string
   category: Category
@@ -121,6 +132,16 @@ interface ProductImageProps {
 }
 
 export function ProductImage({ productId, category, name, variant = 'card' }: ProductImageProps) {
+  const photo = PHOTO_BY_ID[productId]
+
+  if (photo) {
+    return (
+      <div className="product-art product-art--photo" data-variant={variant}>
+        <img src={photo} alt={name} loading="lazy" decoding="async" />
+      </div>
+    )
+  }
+
   const Art = BY_ID[productId] ?? BY_CATEGORY[category]
 
   return (

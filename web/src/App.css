@@ -258,6 +258,31 @@
   height: 40px;
 }
 
+/* Fotos reais de produto (capinhas): preenchem o quadro, sem a moldura de cor da categoria. */
+.product-art--photo {
+  overflow: hidden;
+  padding: 0;
+}
+
+.product-art--photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+}
+
+.product-art--photo[data-variant='card'] {
+  aspect-ratio: 1;
+}
+
+.product-art--photo[data-variant='thumb'] {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-sm);
+  flex: none;
+}
+
 /* As peças claras são branco translúcido para funcionar sobre a cor de cada
    categoria, no tema claro e no escuro. */
 .art-body {
