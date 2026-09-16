@@ -15,26 +15,26 @@ interface OrderSummaryProps {
   totalInCents: number
   /** Quanto o cliente economiza em relação ao preço "de". */
   savingsInCents: number
-  submitting: boolean
+  /** Erro de uma tentativa de checkout anterior para este mesmo carrinho, se houver. */
   error: ApiError | null
   onIncrease: (productId: string) => void
   onDecrease: (productId: string) => void
   onRemove: (productId: string) => void
   onClear: () => void
-  onSubmit: () => void
+  /** Leva para a tela /checkout. A compra só é enviada de lá. */
+  onContinue: () => void
 }
 
 export function OrderSummary({
   lines,
   totalInCents,
   savingsInCents,
-  submitting,
   error,
   onIncrease,
   onDecrease,
   onRemove,
   onClear,
-  onSubmit,
+  onContinue,
 }: OrderSummaryProps) {
   const empty = lines.length === 0
   const subtotalInCents = totalInCents + savingsInCents
@@ -144,13 +144,8 @@ export function OrderSummary({
           </p>
         )}
 
-        <button
-          type="button"
-          className="btn-primary"
-          onClick={onSubmit}
-          disabled={empty || submitting}
-        >
-          {submitting ? 'Processando...' : 'Continuar'}
+        <button type="button" className="btn-primary" onClick={onContinue} disabled={empty}>
+          Continuar
         </button>
 
         <p className="order__note">O valor final é calculado e confirmado pela API.</p>

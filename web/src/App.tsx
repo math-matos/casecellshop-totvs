@@ -7,11 +7,13 @@ import {
 } from './api/products-store'
 import { ApiError, type Category, type Order } from './api/types'
 import { AlertIcon } from './components/Icons'
+import { CheckoutPage } from './components/CheckoutPage'
 import { OrderConfirmation } from './components/OrderConfirmation'
 import { OrderSummary } from './components/OrderSummary'
 import { ProductCard } from './components/ProductCard'
 import { TotvsOffering } from './components/TotvsOffering'
 import { useCart } from './hooks/useCart'
+import { useRoute } from './hooks/useRoute'
 import './App.css'
 
 type Filter = 'todos' | Category
@@ -36,6 +38,7 @@ export default function App() {
     getProductsSnapshot,
   )
 
+  const { path, navigate } = useRoute()
   const [filter, setFilter] = useState<Filter>('todos')
 
   const [submitting, setSubmitting] = useState(false)
@@ -61,7 +64,7 @@ export default function App() {
    */
   const idempotency = useRef<{ signature: string; key: string } | null>(null)
 
-  const handleSubmit = useCallback(async () => {
+  const handleFinalize = useCallback(async () => {
     if (cart.items.length === 0 || submitting) return
 
     const reusable = idempotency.current
@@ -76,6 +79,7 @@ export default function App() {
       setOrder(confirmed)
       cart.clear()
       idempotency.current = null
+      navigate('/')
       // O estoque mudou no servidor: recarrega para a vitrine refletir a compra.
       void reloadProducts({ silent: true })
     } catch (error) {
@@ -90,7 +94,7 @@ export default function App() {
     } finally {
       setSubmitting(false)
     }
-  }, [cart, cartSignature, submitting])
+  }, [cart, cartSignature, submitting, navigate])
 
   const handleNewOrder = useCallback(() => {
     setOrder(null)
@@ -105,19 +109,67 @@ export default function App() {
   // O erro só continua valendo enquanto o carrinho for o mesmo que falhou.
   const checkoutError = failure?.signature === cartSignature ? failure.error : null
 
+  const wantsCheckout = path === '/checkout'
+  const view = order
+    ? 'confirmation'
+    : wantsCheckout
+      ? cart.items.length > 0
+        ? 'checkout'
+        : 'checkout-empty'
+      : 'shopping'
+
+  const heading =
+    view === 'confirmation'
+      ? { title: 'Pedido confirmado', subtitle: 'Guarde o número do pedido para acompanhamento.' }
+      : view === 'checkout' || view === 'checkout-empty'
+        ? { title: 'Finalize sua compra', subtitle: 'Revise os itens e conclua o pedido.' }
+        : {
+            title: 'Monte seu pedido',
+            subtitle: 'Acessórios para celular com entrega grátis e estoque em tempo real.',
+          }
+
   return (
     <main className="page">
       <div className="page__top">
         <div className="page__intro">
-          <h1>Monte seu pedido</h1>
-          <p>Acessórios para celular com entrega grátis e estoque em tempo real.</p>
+          <h1>{heading.title}</h1>
+          <p>{heading.subtitle}</p>
         </div>
         <TotvsOffering />
       </div>
 
-      {order ? (
+      {view === 'confirmation' && order && (
         <OrderConfirmation order={order} onNewOrder={handleNewOrder} />
-      ) : (
+      )}
+
+      {view === 'checkout' && (
+        <CheckoutPage
+          lines={cart.lines}
+          totalInCents={cart.totalInCents}
+          savingsInCents={cart.savingsInCents}
+          submitting={submitting}
+          error={checkoutError}
+          onIncrease={(productId) => {
+            const product = products.find((item) => item.id === productId)
+            if (product) cart.increase(productId, product.stock)
+          }}
+          onDecrease={cart.decrease}
+          onRemove={cart.remove}
+          onBack={() => navigate('/')}
+          onFinalize={() => void handleFinalize()}
+        />
+      )}
+
+      {view === 'checkout-empty' && (
+        <div className="checkout-empty">
+          <p>Seu carrinho está vazio.</p>
+          <button type="button" className="btn-primary" onClick={() => navigate('/')}>
+            Ver produtos
+          </button>
+        </div>
+      )}
+
+      {view === 'shopping' && (
         <div className="shell">
           <section className="catalog" aria-label="Catálogo de produtos">
             <div className="chips" role="tablist" aria-label="Filtrar por categoria">
@@ -181,7 +233,6 @@ export default function App() {
             lines={cart.lines}
             totalInCents={cart.totalInCents}
             savingsInCents={cart.savingsInCents}
-            submitting={submitting}
             error={checkoutError}
             onIncrease={(productId) => {
               const product = products.find((item) => item.id === productId)
@@ -190,7 +241,7 @@ export default function App() {
             onDecrease={cart.decrease}
             onRemove={cart.remove}
             onClear={cart.clear}
-            onSubmit={() => void handleSubmit()}
+            onContinue={() => navigate('/checkout')}
           />
         </div>
       )}
