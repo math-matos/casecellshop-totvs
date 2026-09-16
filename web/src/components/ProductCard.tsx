@@ -1,5 +1,5 @@
 import type { Product } from '../api/types'
-import { formatBRL } from '../lib/format'
+import { formatBRL, hasDiscount } from '../lib/format'
 import { PlusIcon } from './Icons'
 import { ProductImage } from './ProductImage'
 import { QuantityStepper } from './QuantityStepper'
@@ -23,9 +23,7 @@ export function ProductCard({
   onDecrease,
 }: ProductCardProps) {
   const soldOut = product.stock === 0
-  const hasDiscount =
-    product.compareAtPriceInCents !== undefined &&
-    product.compareAtPriceInCents > product.priceInCents
+  const discounted = hasDiscount(product)
 
   return (
     <article
@@ -43,7 +41,7 @@ export function ProductCard({
 
       <p className="card__price">
         <span className="card__price-now">{formatBRL(product.priceInCents)}</span>
-        {hasDiscount && (
+        {discounted && (
           <span className="card__price-was">{formatBRL(product.compareAtPriceInCents!)}</span>
         )}
       </p>

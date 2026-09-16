@@ -1,7 +1,8 @@
 import type { ApiError } from '../api/types'
-import { formatBRL } from '../lib/format'
-import { AlertIcon, TagIcon, TrashIcon } from './Icons'
+import { formatBRL, hasDiscount } from '../lib/format'
+import { AlertIcon, TrashIcon } from './Icons'
 import type { OrderLine } from './OrderSummary'
+import { OrderTotals } from './OrderTotals'
 import { ProductImage } from './ProductImage'
 import { QuantityStepper } from './QuantityStepper'
 
@@ -63,9 +64,7 @@ export function CheckoutPage({
 
         <ul className="checkout__list">
           {lines.map(({ product, quantity }) => {
-            const hasDiscount =
-              product.compareAtPriceInCents !== undefined &&
-              product.compareAtPriceInCents > product.priceInCents
+            const discounted = hasDiscount(product)
 
             return (
               <li key={product.id} className="checkout__item">
@@ -80,7 +79,7 @@ export function CheckoutPage({
                   <p className="checkout__item-name">{product.name}</p>
                   <p className="checkout__item-price">
                     <span>{formatBRL(product.priceInCents)}</span>
-                    {hasDiscount && (
+                    {discounted && (
                       <s className="checkout__item-was">
                         {formatBRL(product.compareAtPriceInCents!)}
                       </s>
@@ -122,33 +121,11 @@ export function CheckoutPage({
         </header>
 
         <div className="order__foot order__foot--flush">
-          {savingsInCents > 0 && (
-            <p className="order__promo">
-              <TagIcon />
-              <span>Promoção aplicada</span>
-              <strong>-{formatBRL(savingsInCents)}</strong>
-            </p>
-          )}
-
-          <dl className="order__totals">
-            <div>
-              <dt>Subtotal</dt>
-              <dd>{formatBRL(subtotalInCents)}</dd>
-            </div>
-            <div>
-              <dt>Frete</dt>
-              <dd className="order__free">Grátis</dd>
-            </div>
-            <div>
-              <dt>Desconto</dt>
-              <dd>{savingsInCents > 0 ? `-${formatBRL(savingsInCents)}` : formatBRL(0)}</dd>
-            </div>
-          </dl>
-
-          <div className="order__total">
-            <span>Total</span>
-            <strong>{formatBRL(totalInCents)}</strong>
-          </div>
+          <OrderTotals
+            subtotalInCents={subtotalInCents}
+            savingsInCents={savingsInCents}
+            totalInCents={totalInCents}
+          />
 
           {error && (
             <p className="alert alert--error" role="alert">

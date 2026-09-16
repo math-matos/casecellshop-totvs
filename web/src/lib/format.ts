@@ -5,6 +5,12 @@ export function formatBRL(cents: number): string {
   return BRL.format(cents / 100)
 }
 
+export function hasDiscount(product: { priceInCents: number; compareAtPriceInCents?: number }): boolean {
+  return (
+    product.compareAtPriceInCents !== undefined && product.compareAtPriceInCents > product.priceInCents
+  )
+}
+
 export function formatDateTime(iso: string): string {
   return new Intl.DateTimeFormat('pt-BR', {
     dateStyle: 'short',

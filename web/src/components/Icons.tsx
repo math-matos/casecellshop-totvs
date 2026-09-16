@@ -37,14 +37,6 @@ export function TrashIcon() {
   )
 }
 
-export function CloseIcon() {
-  return (
-    <svg {...base} className="icon">
-      <path d="M6 6l12 12M18 6L6 18" />
-    </svg>
-  )
-}
-
 export function TagIcon() {
   return (
     <svg {...base} className="icon">

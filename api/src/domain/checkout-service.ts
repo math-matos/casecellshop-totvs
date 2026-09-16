@@ -29,18 +29,10 @@ export interface CheckoutServiceDependencies {
   productRepository: ProductRepository
   orderRepository: OrderRepository
   idempotencyStore: IdempotencyStore
-  now?: () => Date
-  generateId?: () => string
 }
 
 export class CheckoutService {
-  private readonly now: () => Date
-  private readonly generateId: () => string
-
-  constructor(private readonly deps: CheckoutServiceDependencies) {
-    this.now = deps.now ?? (() => new Date())
-    this.generateId = deps.generateId ?? randomUUID
-  }
+  constructor(private readonly deps: CheckoutServiceDependencies) {}
 
   async checkout(input: CheckoutInput): Promise<CheckoutResult> {
     const items = mergeDuplicateItems(input.items)
@@ -97,11 +89,11 @@ export class CheckoutService {
     })
 
     const order: Order = {
-      id: this.generateId(),
+      id: randomUUID(),
       status: 'CONFIRMED',
       items: orderItems,
       totalInCents: orderItems.reduce((sum, item) => sum + item.subtotalInCents, 0),
-      createdAt: this.now().toISOString(),
+      createdAt: new Date().toISOString(),
     }
 
     await orderRepository.save(order)

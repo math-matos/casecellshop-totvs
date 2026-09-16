@@ -1,6 +1,7 @@
 import type { ApiError, Product } from '../api/types'
-import { formatBRL } from '../lib/format'
-import { AlertIcon, CartIcon, TagIcon, TrashIcon } from './Icons'
+import { formatBRL, hasDiscount } from '../lib/format'
+import { AlertIcon, CartIcon, TrashIcon } from './Icons'
+import { OrderTotals } from './OrderTotals'
 import { ProductImage } from './ProductImage'
 import { QuantityStepper } from './QuantityStepper'
 
@@ -59,9 +60,7 @@ export function OrderSummary({
       ) : (
         <ul className="order__list">
           {lines.map(({ product, quantity }) => {
-            const hasDiscount =
-              product.compareAtPriceInCents !== undefined &&
-              product.compareAtPriceInCents > product.priceInCents
+            const discounted = hasDiscount(product)
 
             return (
               <li key={product.id} className="order__item">
@@ -76,7 +75,7 @@ export function OrderSummary({
                   <p className="order__item-name">{product.name}</p>
                   <p className="order__item-price">
                     <span>{formatBRL(product.priceInCents)}</span>
-                    {hasDiscount && (
+                    {discounted && (
                       <s className="order__item-was">
                         {formatBRL(product.compareAtPriceInCents!)}
                       </s>
@@ -109,33 +108,11 @@ export function OrderSummary({
       )}
 
       <div className="order__foot">
-        {savingsInCents > 0 && (
-          <p className="order__promo">
-            <TagIcon />
-            <span>Promoção aplicada</span>
-            <strong>-{formatBRL(savingsInCents)}</strong>
-          </p>
-        )}
-
-        <dl className="order__totals">
-          <div>
-            <dt>Subtotal</dt>
-            <dd>{formatBRL(subtotalInCents)}</dd>
-          </div>
-          <div>
-            <dt>Frete</dt>
-            <dd className="order__free">Grátis</dd>
-          </div>
-          <div>
-            <dt>Desconto</dt>
-            <dd>{savingsInCents > 0 ? `-${formatBRL(savingsInCents)}` : formatBRL(0)}</dd>
-          </div>
-        </dl>
-
-        <div className="order__total">
-          <span>Total</span>
-          <strong>{formatBRL(totalInCents)}</strong>
-        </div>
+        <OrderTotals
+          subtotalInCents={subtotalInCents}
+          savingsInCents={savingsInCents}
+          totalInCents={totalInCents}
+        />
 
         {error && (
           <p className="alert alert--error" role="alert">

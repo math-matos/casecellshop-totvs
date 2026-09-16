@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useState } from 'react'
 import type { Product } from '../api/types'
 import type { CheckoutItemInput } from '../api/client'
 import type { OrderLine } from '../components/OrderSummary'
@@ -7,12 +7,10 @@ import type { OrderLine } from '../components/OrderSummary'
 export type CartState = Record<string, number>
 
 export interface Cart {
-  state: CartState
   lines: OrderLine[]
   items: CheckoutItemInput[]
   totalInCents: number
   savingsInCents: number
-  count: number
   quantityOf: (productId: string) => number
   add: (product: Product) => void
   increase: (productId: string, max: number) => void
@@ -30,32 +28,32 @@ export interface Cart {
 export function useCart(products: Product[]): Cart {
   const [state, setState] = useState<CartState>({})
 
-  const byId = useMemo(() => new Map(products.map((product) => [product.id, product])), [products])
+  const byId = new Map(products.map((product) => [product.id, product]))
 
-  const quantityOf = useCallback((productId: string) => state[productId] ?? 0, [state])
+  const quantityOf = (productId: string) => state[productId] ?? 0
 
-  const add = useCallback((product: Product) => {
+  const add = (product: Product) => {
     if (product.stock < 1) return
     setState((current) => ({ ...current, [product.id]: Math.min(1, product.stock) }))
-  }, [])
+  }
 
-  const increase = useCallback((productId: string, max: number) => {
+  const increase = (productId: string, max: number) => {
     setState((current) => {
       const next = Math.min((current[productId] ?? 0) + 1, max)
       return next === current[productId] ? current : { ...current, [productId]: next }
     })
-  }, [])
+  }
 
-  const remove = useCallback((productId: string) => {
+  const remove = (productId: string) => {
     setState((current) => {
       if (!(productId in current)) return current
       const next = { ...current }
       delete next[productId]
       return next
     })
-  }, [])
+  }
 
-  const decrease = useCallback((productId: string) => {
+  const decrease = (productId: string) => {
     setState((current) => {
       const quantity = (current[productId] ?? 0) - 1
 
@@ -67,52 +65,34 @@ export function useCart(products: Product[]): Cart {
 
       return { ...current, [productId]: quantity }
     })
-  }, [])
+  }
 
-  const clear = useCallback(() => setState({}), [])
+  const clear = () => setState({})
 
-  const lines = useMemo<OrderLine[]>(
-    () =>
-      Object.entries(state)
-        .map(([productId, quantity]) => {
-          const product = byId.get(productId)
-          return product ? { product, quantity } : null
-        })
-        .filter((line): line is OrderLine => line !== null),
-    [state, byId],
-  )
+  const lines: OrderLine[] = Object.entries(state)
+    .map(([productId, quantity]) => {
+      const product = byId.get(productId)
+      return product ? { product, quantity } : null
+    })
+    .filter((line): line is OrderLine => line !== null)
 
-  const items = useMemo<CheckoutItemInput[]>(
-    () => lines.map(({ product, quantity }) => ({ productId: product.id, quantity })),
-    [lines],
-  )
+  const items: CheckoutItemInput[] = lines.map(({ product, quantity }) => ({
+    productId: product.id,
+    quantity,
+  }))
 
-  const totalInCents = useMemo(
-    () => lines.reduce((sum, { product, quantity }) => sum + product.priceInCents * quantity, 0),
-    [lines],
-  )
+  const totalInCents = lines.reduce((sum, { product, quantity }) => sum + product.priceInCents * quantity, 0)
 
-  const savingsInCents = useMemo(
-    () =>
-      lines.reduce((sum, { product, quantity }) => {
-        const was = product.compareAtPriceInCents ?? product.priceInCents
-        return sum + Math.max(0, was - product.priceInCents) * quantity
-      }, 0),
-    [lines],
-  )
-
-  const count = useMemo(
-    () => lines.reduce((sum, { quantity }) => sum + quantity, 0),
-    [lines],
-  )
+  const savingsInCents = lines.reduce((sum, { product, quantity }) => {
+    const was = product.compareAtPriceInCents ?? product.priceInCents
+    return sum + Math.max(0, was - product.priceInCents) * quantity
+  }, 0)
 
   return {
-    state,
     lines,
     items,
     totalInCents,
     savingsInCents,
-    count,
     quantityOf,
     add,
     increase,

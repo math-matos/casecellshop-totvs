@@ -1,4 +1,4 @@
-import { useCallback, useSyncExternalStore } from 'react'
+import { useSyncExternalStore } from 'react'
 
 function subscribe(callback: () => void): () => void {
   window.addEventListener('popstate', callback)
@@ -25,12 +25,12 @@ export interface Route {
 export function useRoute(): Route {
   const path = useSyncExternalStore(subscribe, getSnapshot)
 
-  const navigate = useCallback((next: string) => {
+  const navigate = (next: string) => {
     if (next === window.location.pathname) return
     window.history.pushState({}, '', next)
     // pushState não dispara popstate sozinho, então avisamos os assinantes na mão.
     window.dispatchEvent(new PopStateEvent('popstate'))
-  }, [])
+  }
 
   return { path, navigate }
 }

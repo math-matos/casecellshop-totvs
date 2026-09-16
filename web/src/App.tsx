@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState, useSyncExternalStore } from 'react'
+import { useRef, useState, useSyncExternalStore } from 'react'
 import { createCheckout } from './api/client'
 import {
   getProductsSnapshot,
@@ -48,14 +48,10 @@ export default function App() {
   const cart = useCart(products)
 
   /** Identidade do carrinho atual. Muda sempre que itens ou quantidades mudam. */
-  const cartSignature = useMemo(
-    () =>
-      cart.items
-        .map((item) => `${item.productId}:${item.quantity}`)
-        .sort()
-        .join('|'),
-    [cart.items],
-  )
+  const cartSignature = cart.items
+    .map((item) => `${item.productId}:${item.quantity}`)
+    .sort()
+    .join('|')
 
   /**
    * A Idempotency-Key vale para uma tentativa de compra.
@@ -64,7 +60,7 @@ export default function App() {
    */
   const idempotency = useRef<{ signature: string; key: string } | null>(null)
 
-  const handleFinalize = useCallback(async () => {
+  const handleFinalize = async () => {
     if (cart.items.length === 0 || submitting) return
 
     const reusable = idempotency.current
@@ -92,19 +88,17 @@ export default function App() {
     } finally {
       setSubmitting(false)
     }
-  }, [cart, cartSignature, submitting, navigate])
+  }
 
-  const handleNewOrder = useCallback(() => {
+  const handleNewOrder = () => {
     setOrder(null)
     idempotency.current = null
     navigate('/')
     void reloadProducts({ silent: true })
-  }, [navigate])
+  }
 
-  const visibleProducts = useMemo(
-    () => (filter === 'todos' ? products : products.filter((item) => item.category === filter)),
-    [products, filter],
-  )
+  const visibleProducts =
+    filter === 'todos' ? products : products.filter((item) => item.category === filter)
 
   // O erro só continua valendo enquanto o carrinho for o mesmo que falhou.
   const checkoutError = failure?.signature === cartSignature ? failure.error : null
