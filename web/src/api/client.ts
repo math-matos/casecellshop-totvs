@@ -2,6 +2,11 @@ import { ApiError, type ApiErrorCode, type Order, type Product } from './types'
 
 const BASE_URL = (import.meta.env.VITE_API_URL ?? 'http://localhost:3000').replace(/\/$/, '')
 
+/** Atraso artificial só em dev, pra dar tempo de ver os loadings na tela. */
+async function devDelay(ms = 1200): Promise<void> {
+  if (import.meta.env.DEV) await new Promise((resolve) => setTimeout(resolve, ms))
+}
+
 interface ErrorBody {
   code?: string
   message?: string
@@ -34,6 +39,8 @@ function toNetworkError(): ApiError {
 }
 
 export async function fetchProducts(signal?: AbortSignal): Promise<Product[]> {
+  await devDelay()
+
   let response: Response
 
   try {
@@ -65,6 +72,8 @@ export async function createCheckout(
   items: CheckoutItemInput[],
   idempotencyKey: string,
 ): Promise<Order> {
+  await devDelay()
+
   let response: Response
 
   try {

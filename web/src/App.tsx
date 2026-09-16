@@ -185,7 +185,13 @@ export default function App() {
             {loading && (
               <div className="grid" aria-hidden>
                 {Array.from({ length: 6 }, (_, index) => (
-                  <div key={index} className="card card--skeleton" />
+                  <div key={index} className="card card--skeleton">
+                    <div className="skeleton-line skeleton-line--badge" />
+                    <div className="skeleton-block" />
+                    <div className="skeleton-line skeleton-line--title" />
+                    <div className="skeleton-line skeleton-line--price" />
+                    <div className="skeleton-line skeleton-line--button" />
+                  </div>
                 ))}
               </div>
             )}
