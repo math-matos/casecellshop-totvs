@@ -56,7 +56,9 @@ describe('POST /checkout', () => {
       const app = makeApp()
 
       const res = await postCheckout(app, {
-        items: [{ productId: 'capinha-preta', quantity: 1, unitPriceInCents: 1 }],
+        items: [
+          { productId: 'capinha-preta', quantity: 1, unitPriceInCents: 1 },
+        ],
       })
 
       expect(res.statusCode).toBe(201)
@@ -88,7 +90,9 @@ describe('POST /checkout', () => {
       ['quantidade como string', '1'],
     ])('%s', async (_label, quantity) => {
       const app = makeApp()
-      const res = await postCheckout(app, { items: [{ productId: 'capinha-preta', quantity }] })
+      const res = await postCheckout(app, {
+        items: [{ productId: 'capinha-preta', quantity }],
+      })
 
       expect(res.statusCode).toBe(400)
       expect(res.json()).toMatchObject({
@@ -119,7 +123,10 @@ describe('POST /checkout', () => {
       const res = await app.inject({
         method: 'POST',
         url: '/checkout',
-        headers: { 'content-type': 'application/json', 'idempotency-key': randomUUID() },
+        headers: {
+          'content-type': 'application/json',
+          'idempotency-key': randomUUID(),
+        },
         payload: '{"items": [',
       })
 
@@ -176,7 +183,9 @@ describe('POST /checkout', () => {
   describe('409 - estoque insuficiente', () => {
     test('produto esgotado', async () => {
       const app = makeApp()
-      const res = await postCheckout(app, { items: [{ productId: 'capinha-verde', quantity: 1 }] })
+      const res = await postCheckout(app, {
+        items: [{ productId: 'capinha-verde', quantity: 1 }],
+      })
 
       expect(res.statusCode).toBe(409)
       expect(res.json()).toEqual({
@@ -188,7 +197,9 @@ describe('POST /checkout', () => {
 
     test('quantidade maior que o estoque disponível', async () => {
       const app = makeApp()
-      const res = await postCheckout(app, { items: [{ productId: 'capinha-preta', quantity: 11 }] })
+      const res = await postCheckout(app, {
+        items: [{ productId: 'capinha-preta', quantity: 11 }],
+      })
 
       expect(res.statusCode).toBe(409)
       expect(res.json()).toMatchObject({
@@ -218,7 +229,9 @@ describe('POST /checkout', () => {
 
       const responses = await Promise.all(
         Array.from({ length: 10 }, () =>
-          postCheckout(app, { items: [{ productId: 'pelicula-vidro-3d', quantity: 1 }] }),
+          postCheckout(app, {
+            items: [{ productId: 'pelicula-vidro-3d', quantity: 1 }],
+          }),
         ),
       )
 
@@ -250,7 +263,10 @@ describe('POST /checkout', () => {
       const app = makeApp()
       const idempotencyKey = randomUUID()
 
-      await postCheckout(app, { items: [{ productId: 'capinha-preta', quantity: 1 }], idempotencyKey })
+      await postCheckout(app, {
+        items: [{ productId: 'capinha-preta', quantity: 1 }],
+        idempotencyKey,
+      })
       const res = await postCheckout(app, {
         items: [{ productId: 'capinha-preta', quantity: 5 }],
         idempotencyKey,
@@ -268,13 +284,17 @@ describe('POST /checkout', () => {
       const items = [{ productId: 'capinha-preta', quantity: 1 }]
 
       const responses = await Promise.all(
-        Array.from({ length: 5 }, () => postCheckout(app, { items, idempotencyKey })),
+        Array.from({ length: 5 }, () =>
+          postCheckout(app, { items, idempotencyKey }),
+        ),
       )
 
       for (const res of responses) {
         expect([201, 409]).toContain(res.statusCode)
         if (res.statusCode === 409) {
-          expect(res.json()).toMatchObject({ code: 'IDEMPOTENCY_REQUEST_IN_PROGRESS' })
+          expect(res.json()).toMatchObject({
+            code: 'IDEMPOTENCY_REQUEST_IN_PROGRESS',
+          })
         }
       }
       expect(responses.some((res) => res.statusCode === 201)).toBe(true)
@@ -297,7 +317,14 @@ describe('POST /checkout', () => {
       expect(failed.statusCode).toBe(409)
 
       inner = new InMemoryProductRepository([
-        { id: 'capinha-verde', name: 'Capinha Verde', priceInCents: 4990, stock: 5 },
+        {
+          id: 'capinha-verde',
+          name: 'Capinha Verde',
+          priceInCents: 4990,
+          stock: 5,
+          category: 'capinhas',
+          compareAtPriceInCents: 5990,
+        },
       ])
 
       const retried = await postCheckout(app, { items, idempotencyKey })
@@ -317,10 +344,15 @@ describe('POST /checkout', () => {
       }
       const app = makeApp({ productRepository: failing })
 
-      const res = await postCheckout(app, { items: [{ productId: 'capinha-preta', quantity: 1 }] })
+      const res = await postCheckout(app, {
+        items: [{ productId: 'capinha-preta', quantity: 1 }],
+      })
 
       expect(res.statusCode).toBe(500)
-      expect(res.json()).toEqual({ code: 'SERVER_ERROR', message: 'Erro de servidor inesperado.' })
+      expect(res.json()).toEqual({
+        code: 'SERVER_ERROR',
+        message: 'Erro de servidor inesperado.',
+      })
       expect(res.body).not.toContain('conexão com o banco')
     })
 
@@ -339,7 +371,9 @@ describe('POST /checkout', () => {
       const idempotencyKey = randomUUID()
       const items = [{ productId: 'capinha-preta', quantity: 1 }]
 
-      expect((await postCheckout(app, { items, idempotencyKey })).statusCode).toBe(500)
+      expect(
+        (await postCheckout(app, { items, idempotencyKey })).statusCode,
+      ).toBe(500)
 
       shouldFail = false
       const retried = await postCheckout(app, { items, idempotencyKey })
