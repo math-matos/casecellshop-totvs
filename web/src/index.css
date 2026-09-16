@@ -1,30 +1,53 @@
-:root {
-  --page: #e9edf6;
-  --surface: #ffffff;
-  --surface-2: #f3f5fb;
-  --surface-3: #e9ecf6;
-  --text: #0d1020;
-  --muted: #6f7590;
-  --border: #e4e8f2;
-  --border-strong: #d3d9e8;
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(https://cdn.jsdelivr.net/npm/@fontsource/roboto@5/files/roboto-latin-400-normal.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(https://cdn.jsdelivr.net/npm/@fontsource/roboto@5/files/roboto-latin-500-normal.woff2) format('woff2');
+}
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(https://cdn.jsdelivr.net/npm/@fontsource/roboto@5/files/roboto-latin-700-normal.woff2) format('woff2');
+}
 
-  --brand: #3d43dd;
-  --brand-hover: #3237c4;
-  --brand-soft: #eceefe;
+/* Paleta baseada nos tokens de marca de totvs.com (--primary, --blue-dark, --dark, --success, --danger). */
+:root {
+  --page: #f4f6f8;
+  --surface: #ffffff;
+  --surface-2: #f5f7fa;
+  --surface-3: #eef1f6;
+  --text: #101820;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+
+  --brand: #00a3be;
+  --brand-hover: #00697a;
+  --brand-soft: #e0f7fc;
   --brand-ink: #ffffff;
 
-  --success: #0c8f5b;
-  --success-soft: #e2f6ed;
-  --danger: #cf2942;
-  --danger-soft: #fdeaed;
+  --success: #157425;
+  --success-soft: #e3f6e9;
+  --danger: #dc3545;
+  --danger-soft: #fbe4e7;
 
-  --radius-lg: 20px;
-  --radius-md: 14px;
-  --radius-sm: 11px;
-  --shadow-card: 0 1px 2px rgba(13, 16, 32, 0.04);
-  --shadow-panel: 0 12px 32px -18px rgba(13, 16, 32, 0.35);
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --radius-sm: 7px;
+  --shadow-card: 0 1px 2px rgba(16, 24, 32, 0.06), 0 1px 1px rgba(16, 24, 32, 0.04);
+  --shadow-panel: 0 10px 24px -6px rgba(16, 24, 32, 0.12), 0 4px 10px -4px rgba(16, 24, 32, 0.08);
 
-  --sans: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --sans: 'Roboto', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
 
   font: 16px/1.5 var(--sans);
   color-scheme: light dark;
@@ -37,19 +60,19 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --page: #0b0d15;
-    --surface: #151824;
-    --surface-2: #1c2030;
-    --surface-3: #232839;
-    --text: #eef0f8;
-    --muted: #969cb5;
-    --border: #262b3c;
-    --border-strong: #333a4f;
+    --page: #0b1114;
+    --surface: #131b20;
+    --surface-2: #182228;
+    --surface-3: #202c33;
+    --text: #eef3f5;
+    --muted: #93a1ab;
+    --border: #223038;
+    --border-strong: #2e3f49;
 
-    --brand: #6b71ff;
-    --brand-hover: #7d83ff;
-    --brand-soft: #1e2140;
-    --brand-ink: #ffffff;
+    --brand: #00c9eb;
+    --brand-hover: #35d6f0;
+    --brand-soft: #0f333c;
+    --brand-ink: #00222b;
 
     --success: #35c68d;
     --success-soft: #122a20;
@@ -57,8 +80,31 @@
     --danger-soft: #2c161c;
 
     --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --shadow-panel: 0 12px 32px -18px rgba(0, 0, 0, 0.8);
+    --shadow-panel: 0 12px 28px -10px rgba(0, 0, 0, 0.6), 0 4px 12px -6px rgba(0, 0, 0, 0.5);
   }
+}
+
+::selection {
+  background-color: var(--brand-soft);
+  color: var(--text);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: var(--border-strong);
+  border: 2px solid var(--page);
+  border-radius: 999px;
 }
 
 * {
