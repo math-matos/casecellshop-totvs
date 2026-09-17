@@ -1,5 +1,7 @@
 # Decisões e trade-offs
 
+OBS: coloquei atraso na api intencionalmente para simular os carregamentos.
+
 ## Persistência em memória
 
 `api` guarda produtos, pedidos e chaves de idempotência em `Map`s (`InMemoryProductRepository`, `InMemoryOrderRepository`, `InMemoryIdempotencyStore`). Sem banco de dados por conta do case, se nao usaria um Postgres + Redis.
