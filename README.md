@@ -5,6 +5,11 @@
 
 ## Como rodar
 
+```bash
+git clone https://github.com/math-matos/casecellshop-totvs.git
+cd .\casecellshop-totvs\
+```
+
 ### Windows (scripts .bat)
 
 Instalação mais prática:
@@ -12,6 +17,7 @@ Instalação mais prática:
 - Execute o .bat: `install-and-run.bat` - instala as dependências da API e do Web e já sobe os dois em dev.
 
 Cada um abre a API e o Web em janelas de terminal separadas.
+
 
 ### 1. API (`api/`)
 
