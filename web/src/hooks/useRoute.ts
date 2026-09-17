@@ -1,13 +1,4 @@
-import { useSyncExternalStore } from 'react'
-
-function subscribe(callback: () => void): () => void {
-  window.addEventListener('popstate', callback)
-  return () => window.removeEventListener('popstate', callback)
-}
-
-function getSnapshot(): string {
-  return window.location.pathname
-}
+import { useLocation, useNavigate } from 'react-router'
 
 export interface Route {
   path: string
@@ -15,22 +6,12 @@ export interface Route {
 }
 
 /**
- * Roteamento mínimo baseado na History API, sem depender de uma lib de rotas.
- *
- * Cobre só o que o app precisa: alternar entre a vitrine ("/") e o checkout
- * ("/checkout") com uma URL real na barra de endereço, e reagir ao botão
- * voltar/avançar do navegador. Segue o mesmo padrão subscribe/snapshot do
- * `products-store.ts`, lido via `useSyncExternalStore`.
+ * Adaptador fino sobre o react-router: expõe o par `path`/`navigate` que o app
+ * usa, mantendo o mesmo contrato de antes. O `<BrowserRouter>` fica em `main.tsx`.
  */
 export function useRoute(): Route {
-  const path = useSyncExternalStore(subscribe, getSnapshot)
+  const { pathname } = useLocation()
+  const navigate = useNavigate()
 
-  const navigate = (next: string) => {
-    if (next === window.location.pathname) return
-    window.history.pushState({}, '', next)
-    // pushState não dispara popstate sozinho, então avisamos os assinantes na mão.
-    window.dispatchEvent(new PopStateEvent('popstate'))
-  }
-
-  return { path, navigate }
+  return { path: pathname, navigate: (path) => navigate(path) }
 }

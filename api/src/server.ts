@@ -2,9 +2,10 @@ import { buildApp } from './app.js'
 
 const app = buildApp({ logger: true })
 const port = Number(process.env.PORT ?? 3000)
+const host = process.env.HOST ?? '0.0.0.0'
 
 try {
-  await app.listen({ port })
+  await app.listen({ port, host })
   console.log(`API rodando em http://localhost:${port}`)
 } catch (err) {
   app.log.error(err)
