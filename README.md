@@ -5,6 +5,10 @@
 
 ## Como rodar
 
+```bash
+git clone https://github.com/math-matos/casecellshop-totvs.git
+```
+
 ### 1. API (`api/`)
 
 ```bash
