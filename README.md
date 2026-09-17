@@ -5,16 +5,6 @@
 
 ## Como rodar
 
-### Docker
-
-```bash
-docker compose up -d
-```
-
-Sobe a API em `http://localhost:3000` e o web em `http://localhost:5173`. Sem precisar instalar Node/pnpm localmente.
-
-### Manual
-
 ### 1. API (`api/`)
 
 ```bash
