@@ -7,6 +7,7 @@
 
 ```bash
 git clone https://github.com/math-matos/casecellshop-totvs.git
+cd .\casecellshop-totvs\
 ```
 
 ### 1. API (`api/`)
