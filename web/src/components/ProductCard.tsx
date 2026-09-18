@@ -27,22 +27,28 @@ export function ProductCard({
 
   return (
     <article
-      className="card"
+      className="group flex flex-col gap-2.5 rounded-lg border border-line bg-surface p-3.5 shadow-card transition hover:-translate-y-[3px] hover:border-line-strong hover:shadow-panel data-[flagged]:border-danger"
       data-sold-out={soldOut || undefined}
       data-flagged={flagged || undefined}
     >
-      <span className={`card__stock ${soldOut ? 'card__stock--out' : ''}`}>
+      <span
+        className={`self-start rounded-full px-2.5 py-1 text-[11.5px] font-semibold ${
+          soldOut ? 'bg-danger-soft text-danger' : 'bg-brand-soft text-brand'
+        }`}
+      >
         {soldOut ? 'Esgotado' : `${product.stock} em estoque`}
       </span>
 
       <ProductImage productId={product.id} category={product.category} name={product.name} />
 
-      <h3 className="card__name">{product.name}</h3>
+      <h3 className="text-[15px] font-semibold leading-[1.35]">{product.name}</h3>
 
-      <p className="card__price">
-        <span className="card__price-now">{formatBRL(product.priceInCents)}</span>
+      <p className="-mt-1 flex items-baseline gap-2">
+        <span className="text-[15px] font-semibold">{formatBRL(product.priceInCents)}</span>
         {discounted && (
-          <span className="card__price-was">{formatBRL(product.compareAtPriceInCents!)}</span>
+          <span className="text-[13px] text-muted line-through">
+            {formatBRL(product.compareAtPriceInCents!)}
+          </span>
         )}
       </p>
 
@@ -55,7 +61,12 @@ export function ProductCard({
           onIncrease={onIncrease}
         />
       ) : (
-        <button type="button" className="card__add" onClick={onAdd} disabled={soldOut}>
+        <button
+          type="button"
+          className="mt-auto flex h-[42px] items-center justify-center gap-1.5 rounded-md border border-line-strong bg-transparent text-sm font-bold text-brand transition hover:enabled:border-brand hover:enabled:bg-brand-soft active:enabled:translate-y-px disabled:border-line disabled:text-muted"
+          onClick={onAdd}
+          disabled={soldOut}
+        >
           <PlusIcon />
           {soldOut ? 'Indisponível' : 'Adicionar'}
         </button>

@@ -6,10 +6,12 @@
  */
 export function TotvsOffering() {
   return (
-    <div className="offering">
-      <span className="offering__label">Um oferecimento</span>
+    <div className="flex flex-none flex-col items-end gap-1.5 max-[640px]:items-start">
+      <span className="text-[10.5px] font-semibold uppercase tracking-[1.1px] text-muted">
+        Um oferecimento
+      </span>
       <img
-        className="offering__logo"
+        className="block h-auto w-[92px]"
         src="/totvs-logo.png"
         alt="TOTVS"
         width={92}

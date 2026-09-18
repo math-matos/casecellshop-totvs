@@ -14,7 +14,6 @@ import { ProductCard } from './components/ProductCard'
 import { TotvsOffering } from './components/TotvsOffering'
 import { useCart } from './hooks/useCart'
 import { useRoute } from './hooks/useRoute'
-import './App.css'
 
 type Filter = 'todos' | Category
 
@@ -131,11 +130,13 @@ export default function App() {
           }
 
   return (
-    <main className="page">
-      <div className="page__top">
-        <div className="page__intro">
-          <h1>{heading.title}</h1>
-          <p>{heading.subtitle}</p>
+    <main className="mx-auto w-[min(1180px,100%)] px-6 pt-7 pb-14 max-[640px]:px-4 max-[640px]:pt-5 max-[640px]:pb-10">
+      <div className="mb-[22px] flex items-end justify-between gap-6 max-[640px]:flex-col max-[640px]:items-start max-[640px]:gap-[14px]">
+        <div>
+          <h1 className="text-[26px] font-bold tracking-[-0.4px] max-[640px]:text-[22px]">
+            {heading.title}
+          </h1>
+          <p className="mt-1 text-[14.5px] text-muted">{heading.subtitle}</p>
         </div>
         <TotvsOffering />
       </div>
@@ -163,25 +164,33 @@ export default function App() {
       )}
 
       {view === 'checkout-empty' && (
-        <div className="checkout-empty">
-          <p>Seu carrinho está vazio.</p>
-          <button type="button" className="btn-primary" onClick={() => navigate('/')}>
+        <div className="mx-auto mt-10 w-[min(420px,100%)] rounded-lg bg-surface p-8 text-center shadow-panel">
+          <p className="mb-[18px] text-muted">Seu carrinho está vazio.</p>
+          <button
+            type="button"
+            className="h-12 w-full rounded-md border-0 bg-brand text-[15px] font-bold text-white shadow-card transition hover:enabled:bg-brand-hover hover:enabled:shadow-panel active:enabled:translate-y-px disabled:opacity-50"
+            onClick={() => navigate('/')}
+          >
             Ver produtos
           </button>
         </div>
       )}
 
       {view === 'shopping' && (
-        <div className="shell">
-          <section className="catalog" aria-label="Catálogo de produtos">
-            <div className="chips" role="tablist" aria-label="Filtrar por categoria">
+        <div className="grid grid-cols-[minmax(0,1fr)_344px] items-start gap-5 max-[960px]:grid-cols-[minmax(0,1fr)]">
+          <section aria-label="Catálogo de produtos">
+            <div
+              className="mb-4 flex flex-wrap gap-2"
+              role="tablist"
+              aria-label="Filtrar por categoria"
+            >
               {FILTERS.map((item) => (
                 <button
                   key={item.id}
                   type="button"
                   role="tab"
                   aria-selected={filter === item.id}
-                  className="chip"
+                  className="whitespace-nowrap rounded-full border border-line bg-surface px-4 py-[9px] text-sm font-semibold text-muted transition-colors hover:border-line-strong hover:text-ink data-[active]:border-brand data-[active]:bg-brand-soft data-[active]:font-bold data-[active]:text-brand-hover"
                   data-active={filter === item.id || undefined}
                   onClick={() => setFilter(item.id)}
                 >
@@ -191,25 +200,38 @@ export default function App() {
             </div>
 
             {loading && (
-              <div className="grid" aria-hidden>
+              <div
+                className="grid grid-cols-[repeat(auto-fill,minmax(196px,1fr))] gap-4 max-[640px]:grid-cols-[repeat(auto-fill,minmax(150px,1fr))] max-[640px]:gap-3"
+                aria-hidden
+              >
                 {Array.from({ length: 6 }, (_, index) => (
-                  <div key={index} className="card card--skeleton">
-                    <div className="skeleton-line skeleton-line--badge" />
-                    <div className="skeleton-block" />
-                    <div className="skeleton-line skeleton-line--title" />
-                    <div className="skeleton-line skeleton-line--price" />
-                    <div className="skeleton-line skeleton-line--button" />
+                  <div
+                    key={index}
+                    className="flex flex-col gap-2.5 rounded-lg border border-line bg-surface p-3.5 shadow-card"
+                  >
+                    <div className="h-5 w-[90px] self-start rounded-full bg-surface-2 motion-safe:animate-pulse" />
+                    <div className="aspect-square rounded-md bg-surface-2 motion-safe:animate-pulse" />
+                    <div className="h-3 w-[70%] rounded-sm bg-surface-2 motion-safe:animate-pulse" />
+                    <div className="h-3 w-[45%] rounded-sm bg-surface-2 motion-safe:animate-pulse" />
+                    <div className="mt-auto h-[38px] rounded-md bg-surface-2 motion-safe:animate-pulse" />
                   </div>
                 ))}
               </div>
             )}
 
             {!loading && loadError && (
-              <div className="alert alert--block" role="alert">
-                <AlertIcon />
+              <div
+                className="flex items-start gap-[9px] rounded-sm border border-line bg-surface p-5 text-[13px] text-muted"
+                role="alert"
+              >
+                <AlertIcon className="size-5 shrink-0 text-danger" />
                 <div>
-                  <p className="alert__title">{loadError.message}</p>
-                  <button type="button" className="btn-ghost" onClick={() => void reloadProducts()}>
+                  <p className="text-[14.5px] font-semibold text-ink">{loadError.message}</p>
+                  <button
+                    type="button"
+                    className="mt-2 rounded-[10px] border border-line-strong bg-surface px-3.5 py-[7px] text-[13.5px] font-semibold hover:border-brand hover:text-brand"
+                    onClick={() => void reloadProducts()}
+                  >
                     Tentar de novo
                   </button>
                 </div>
@@ -217,11 +239,13 @@ export default function App() {
             )}
 
             {!loading && !loadError && visibleProducts.length === 0 && (
-              <p className="catalog__empty">Nenhum produto nesta categoria.</p>
+              <p className="py-10 text-center text-[14.5px] text-muted">
+                Nenhum produto nesta categoria.
+              </p>
             )}
 
             {!loading && !loadError && visibleProducts.length > 0 && (
-              <div className="grid">
+              <div className="grid grid-cols-[repeat(auto-fill,minmax(196px,1fr))] gap-4 max-[640px]:grid-cols-[repeat(auto-fill,minmax(150px,1fr))] max-[640px]:gap-3">
                 {visibleProducts.map((product) => (
                   <ProductCard
                     key={product.id}

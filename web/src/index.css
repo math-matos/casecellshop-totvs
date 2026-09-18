@@ -1,3 +1,5 @@
+@import 'tailwindcss';
+
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
@@ -20,111 +22,83 @@
   src: url(https://cdn.jsdelivr.net/npm/@fontsource/roboto@5/files/roboto-latin-700-normal.woff2) format('woff2');
 }
 
-/* Paleta baseada nos tokens de marca de totvs.com (--primary, --blue-dark, --dark, --success, --danger). */
-:root {
-  --page: #f4f6f8;
-  --surface: #ffffff;
-  --surface-2: #f5f7fa;
-  --surface-3: #eef1f6;
-  --text: #101820;
-  --muted: #64748b;
-  --border: #e2e8f0;
-  --border-strong: #cbd5e1;
+@theme {
+  --font-sans: 'Roboto', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
 
-  --brand: #00a3be;
-  --brand-hover: #00697a;
-  --brand-soft: #e0f7fc;
-  --brand-ink: #ffffff;
+  --color-page: #f4f6f8;
+  --color-surface: #ffffff;
+  --color-surface-2: #f5f7fa;
+  --color-surface-3: #eef1f6;
+  --color-ink: #101820;
+  --color-muted: #64748b;
+  --color-line: #e2e8f0;
+  --color-line-strong: #cbd5e1;
 
-  --success: #157425;
-  --success-soft: #e3f6e9;
-  --danger: #dc3545;
-  --danger-soft: #fbe4e7;
+  --color-brand: #00a3be;
+  --color-brand-hover: #00697a;
+  --color-brand-soft: #e0f7fc;
+
+  --color-success: #157425;
+  --color-success-soft: #e3f6e9;
+  --color-danger: #dc3545;
+  --color-danger-soft: #fbe4e7;
 
   --radius-lg: 14px;
   --radius-md: 10px;
   --radius-sm: 7px;
+
   --shadow-card: 0 1px 2px rgba(16, 24, 32, 0.06), 0 1px 1px rgba(16, 24, 32, 0.04);
   --shadow-panel: 0 10px 24px -6px rgba(16, 24, 32, 0.12), 0 4px 10px -4px rgba(16, 24, 32, 0.08);
-
-  --sans: 'Roboto', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
-
-  font: 16px/1.5 var(--sans);
-  color-scheme: light;
-  color: var(--text);
-  background: var(--page);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
 }
 
-::selection {
-  background-color: var(--brand-soft);
-  color: var(--text);
-}
+/* Irredutíveis a utilitários: fonte base, scrollbar, seleção e foco. */
+@layer base {
+  :root {
+    font: 16px/1.5 var(--font-sans);
+    color-scheme: light;
+    color: var(--color-ink);
+    background: var(--color-page);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
 
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-strong) transparent;
-}
+  body {
+    min-height: 100svh;
+    background: var(--color-page);
+  }
 
-*::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-*::-webkit-scrollbar-track {
-  background: transparent;
-}
-*::-webkit-scrollbar-thumb {
-  background-color: var(--border-strong);
-  border: 2px solid var(--page);
-  border-radius: 999px;
-}
+  button {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
 
-* {
-  box-sizing: border-box;
-}
+  ::selection {
+    background-color: var(--color-brand-soft);
+    color: var(--color-ink);
+  }
 
-body {
-  margin: 0;
-  min-height: 100svh;
-  background: var(--page);
-}
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line-strong) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--color-line-strong);
+    border: 2px solid var(--color-page);
+    border-radius: 999px;
+  }
 
-h1,
-h2,
-h3,
-p,
-dl,
-dd,
-figure {
-  margin: 0;
-}
-
-ul,
-ol {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-button {
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-}
-
-button:disabled {
-  cursor: not-allowed;
-}
-
-:focus-visible {
-  outline: 2px solid var(--brand);
-  outline-offset: 2px;
-}
-
-.icon {
-  width: 18px;
-  height: 18px;
-  flex: none;
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
+  }
 }

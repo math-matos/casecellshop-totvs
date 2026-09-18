@@ -44,30 +44,37 @@ export function CheckoutPage({
   const itemCount = lines.reduce((sum, { quantity }) => sum + quantity, 0)
 
   return (
-    <div className="shell">
-      <section className="checkout__cart" aria-label="Seu carrinho">
-        <div className="checkout__cart-head">
-          <h2>
+    <div className="grid grid-cols-[minmax(0,1fr)_344px] items-start gap-5 max-[960px]:grid-cols-[minmax(0,1fr)]">
+      <section aria-label="Seu carrinho">
+        <div className="mb-1.5 flex items-baseline justify-between gap-3">
+          <h2 className="text-xl font-bold tracking-[-0.2px]">
             Seu carrinho
-            <span className="checkout__count">
+            <span className="ml-1.5 text-sm font-medium text-muted">
               ({itemCount} {itemCount === 1 ? 'produto' : 'produtos'})
             </span>
           </h2>
-          <button type="button" className="btn-link" onClick={onBack}>
+          <button
+            type="button"
+            className="border-0 bg-transparent p-0 text-[13.5px] font-semibold text-brand hover:underline"
+            onClick={onBack}
+          >
             Continuar comprando
           </button>
         </div>
 
-        <p className="checkout__hint">
+        <p className="mb-[18px] text-[13px] text-muted">
           Os itens do carrinho não ficam reservados. Finalize a compra para garantir o pedido.
         </p>
 
-        <ul className="checkout__list">
+        <ul className="flex flex-col gap-3.5">
           {lines.map(({ product, quantity }) => {
             const discounted = hasDiscount(product)
 
             return (
-              <li key={product.id} className="checkout__item">
+              <li
+                key={product.id}
+                className="grid grid-cols-[92px_minmax(0,1fr)_auto] items-start gap-3.5 rounded-lg bg-surface p-4 shadow-card max-[640px]:grid-cols-[72px_minmax(0,1fr)] max-[640px]:grid-rows-[auto_auto]"
+              >
                 <ProductImage
                   productId={product.id}
                   category={product.category}
@@ -75,18 +82,18 @@ export function CheckoutPage({
                   variant="card"
                 />
 
-                <div className="checkout__item-info">
-                  <p className="checkout__item-name">{product.name}</p>
-                  <p className="checkout__item-price">
+                <div>
+                  <p className="text-[15px] font-semibold leading-[1.35]">{product.name}</p>
+                  <p className="mt-1 flex items-baseline gap-2 text-sm">
                     <span>{formatBRL(product.priceInCents)}</span>
                     {discounted && (
-                      <s className="checkout__item-was">
+                      <s className="text-[12.5px] text-muted line-through">
                         {formatBRL(product.compareAtPriceInCents!)}
                       </s>
                     )}
                   </p>
 
-                  <div className="checkout__item-actions">
+                  <div className="mt-3 flex items-center gap-[18px] max-[640px]:flex-wrap max-[640px]:gap-3">
                     <QuantityStepper
                       quantity={quantity}
                       max={product.stock}
@@ -97,16 +104,16 @@ export function CheckoutPage({
                     />
                     <button
                       type="button"
-                      className="btn-link btn-link--muted"
+                      className="inline-flex items-center gap-[5px] border-0 bg-transparent p-0 text-[13.5px] font-medium text-muted hover:text-danger"
                       onClick={() => onRemove(product.id)}
                     >
-                      <TrashIcon />
+                      <TrashIcon className="size-[14px] shrink-0" />
                       Remover
                     </button>
                   </div>
                 </div>
 
-                <span className="checkout__item-subtotal">
+                <span className="whitespace-nowrap text-[15px] font-bold tabular-nums max-[640px]:col-start-2 max-[640px]:mt-1.5 max-[640px]:justify-self-end">
                   {formatBRL(product.priceInCents * quantity)}
                 </span>
               </li>
@@ -115,12 +122,15 @@ export function CheckoutPage({
         </ul>
       </section>
 
-      <aside className="order" aria-label="Resumo do pedido">
-        <header className="order__head">
-          <h2>Resumo do pedido</h2>
+      <aside
+        className="sticky top-5 flex max-h-[calc(100svh-40px)] flex-col rounded-lg bg-surface p-5 shadow-panel max-[960px]:static max-[960px]:max-h-none"
+        aria-label="Resumo do pedido"
+      >
+        <header className="flex items-center justify-between gap-3 pb-3.5">
+          <h2 className="text-[19px] font-bold tracking-[-0.2px]">Resumo do pedido</h2>
         </header>
 
-        <div className="order__foot order__foot--flush">
+        <div>
           <OrderTotals
             subtotalInCents={subtotalInCents}
             savingsInCents={savingsInCents}
@@ -128,21 +138,34 @@ export function CheckoutPage({
           />
 
           {error && (
-            <p className="alert alert--error" role="alert">
-              <AlertIcon />
+            <p
+              className="mb-3 flex items-start gap-[9px] rounded-sm bg-danger-soft px-3 py-2.5 text-[13px] font-medium leading-[1.4] text-danger"
+              role="alert"
+            >
+              <AlertIcon className="mt-px size-4 shrink-0" />
               <span>{error.message}</span>
             </p>
           )}
 
-          <button type="button" className="btn-primary" onClick={onFinalize} disabled={submitting}>
+          <button
+            type="button"
+            className="h-12 w-full rounded-md border-0 bg-brand text-[15px] font-bold text-white shadow-card transition hover:enabled:bg-brand-hover hover:enabled:shadow-panel active:enabled:translate-y-px disabled:opacity-50"
+            onClick={onFinalize}
+            disabled={submitting}
+          >
             {submitting ? 'Processando...' : 'Finalizar compra'}
           </button>
 
-          <div className="checkout__payments">
-            <span>Métodos de pagamento aceitos</span>
-            <div className="checkout__payment-badges">
+          <div className="mt-3.5 border-t border-line pt-3.5 text-center">
+            <span className="mb-2 block text-[10.5px] font-semibold uppercase tracking-[0.6px] text-muted">
+              Métodos de pagamento aceitos
+            </span>
+            <div className="flex flex-wrap justify-center gap-1.5">
               {PAYMENT_BADGES.map((badge) => (
-                <span key={badge} className="checkout__payment-badge">
+                <span
+                  key={badge}
+                  className="rounded-[6px] border border-line-strong px-2.5 py-1 text-[11px] font-semibold text-muted"
+                >
                   {badge}
                 </span>
               ))}
